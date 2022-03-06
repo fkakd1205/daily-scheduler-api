@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleBusinessService {
@@ -30,5 +32,11 @@ public class ScheduleBusinessService {
                 .build();
 
         scheduleService.saveAndModify(newEntity);
+    }
+    
+    public List<ScheduleDto> searchList() {
+        List<ScheduleEntity> entities = scheduleService.searchList();
+        List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
+        return dtos;
     }
 }

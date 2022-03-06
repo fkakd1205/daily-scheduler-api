@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/v1/schedule-category")
+@RequestMapping("/api/v1/schedule-categories")
 public class ScheduleCategoryApiController {
 
     private ScheduleCategoryBusinessService scheduleCategoryBusinessService;
@@ -22,7 +22,7 @@ public class ScheduleCategoryApiController {
         this.scheduleCategoryBusinessService = scheduleCategoryBusinessService;
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public ResponseEntity<?> searchList() {
         Message message = Message.builder()
                 .status(HttpStatus.OK)
