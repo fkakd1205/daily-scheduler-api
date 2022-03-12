@@ -2,21 +2,18 @@ package com.scheduler.daily_scheduler_api.domain.schedule_category.service;
 
 import com.scheduler.daily_scheduler_api.domain.schedule_category.dto.ScheduleCategoryDto;
 import com.scheduler.daily_scheduler_api.domain.schedule_category.entity.ScheduleCategoryEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleCategoryBusinessService {
 
-    private ScheduleCategoryService scheduleCategoryService;
-
-    @Autowired
-    public ScheduleCategoryBusinessService (ScheduleCategoryService scheduleCategoryService) {
-        this.scheduleCategoryService = scheduleCategoryService;
-    }
+    private final ScheduleCategoryService scheduleCategoryService;
 
     public List<ScheduleCategoryDto> searchList() {
         List<ScheduleCategoryEntity> entities = scheduleCategoryService.searchList();
