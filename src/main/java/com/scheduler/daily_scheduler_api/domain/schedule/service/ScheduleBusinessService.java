@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,23 @@ public class ScheduleBusinessService {
     
     public List<ScheduleDto> searchList() {
         List<ScheduleEntity> entities = scheduleService.searchList();
+        List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
+        return dtos;
+    }
+
+    public List<ScheduleDto> searchListByDate(Map<String, Object> params) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
+
+        if (params.get("startDate") == null || params.get("endDate") == null) {
+            return null;
+        }
+
+        startDate = LocalDateTime.parse(params.get("startDate").toString(), format);
+        endDate = LocalDateTime.parse(params.get("endDate").toString(), format);
+
+        List<ScheduleEntity> entities = scheduleService.searchListByDate(startDate, endDate);
         List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
         return dtos;
     }

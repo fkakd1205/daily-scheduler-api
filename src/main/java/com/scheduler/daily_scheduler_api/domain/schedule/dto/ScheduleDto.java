@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import com.scheduler.daily_scheduler_api.domain.schedule.entity.ScheduleEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@ToString
 @Accessors(chain = true)
 public class ScheduleDto {
     private UUID id;

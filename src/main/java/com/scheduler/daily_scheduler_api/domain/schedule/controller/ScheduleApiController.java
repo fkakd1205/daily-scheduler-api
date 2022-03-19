@@ -56,6 +56,17 @@ public class ScheduleApiController {
         return new ResponseEntity<>(message, message.getStatus());
     }
 
+    @GetMapping("/date")
+    public ResponseEntity<?> searchListByDate(@RequestParam Map<String, Object> params) {
+        Message message = Message.builder()
+                .status(HttpStatus.OK)
+                .data(scheduleBusinessService.searchListByDate(params))
+                .message("success")
+                .build();
+
+        return new ResponseEntity<>(message, message.getStatus());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable(value="id") UUID scheduleId) {
         scheduleBusinessService.deleteOne(scheduleId);

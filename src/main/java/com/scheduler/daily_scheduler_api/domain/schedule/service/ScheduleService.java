@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,6 +51,18 @@ public class ScheduleService {
      */
     public List<ScheduleEntity> searchList() {
         return scheduleRepository.findAll();
+    }
+
+    /**
+     * <b>DB Select Related Method</b>
+     * <p>
+     * 해당 날짜의 schedule을 모두 조회한다.
+     * 
+     * @return List[ScheduleEntity]
+     * @see ScheduleRepository#findAll
+     */
+    public List<ScheduleEntity> searchListByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return scheduleRepository.findAllByDate(startDate, endDate);
     }
 
     /**

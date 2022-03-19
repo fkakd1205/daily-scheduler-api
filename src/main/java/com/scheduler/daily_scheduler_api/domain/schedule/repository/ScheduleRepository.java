@@ -1,5 +1,6 @@
 package com.scheduler.daily_scheduler_api.domain.schedule.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,4 +20,10 @@ public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Intege
         + "WHERE sc.id IN :idList"
     )
     List<ScheduleEntity> findAllById(List<UUID> idList);
+
+    @Query("SELECT sc\n"
+        + "FROM ScheduleEntity sc\n"
+        + "WHERE sc.createdAt BETWEEN :startDate AND :endDate"
+    )
+    List<ScheduleEntity> findAllByDate(LocalDateTime startDate, LocalDateTime endDate);
 }
