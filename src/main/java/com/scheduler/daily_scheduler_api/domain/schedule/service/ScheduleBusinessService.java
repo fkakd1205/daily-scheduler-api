@@ -2,6 +2,8 @@ package com.scheduler.daily_scheduler_api.domain.schedule.service;
 
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
 import com.scheduler.daily_scheduler_api.domain.schedule.entity.ScheduleEntity;
+import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -105,8 +107,7 @@ public class ScheduleBusinessService {
      */
     public void patchOne(ScheduleDto changedDto) {
         if(changedDto.getId() == null) {
-            // TODO :: 커스텀 예외 생성하자
-            throw new NullPointerException();
+            throw new CustomNotFoundDataException("수정하려는 데이터가 존재하지 않습니다.");
         }
 
         ScheduleEntity entity = scheduleService.searchOne(changedDto.getId());
