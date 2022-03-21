@@ -11,9 +11,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ScheduleCategoryService {
-
     private final ScheduleCategoryRepository scheduleCategoryRepository;
 
+    /**
+     * <b>DB Select Related Method</b>
+     * <p>
+     * schedule category를 모두 조회한다.
+     * 
+     * @return List[ScheduleCategoryEntity]
+     * @see ScheduleCategoryRepository#findAll
+     */
     public List<ScheduleCategoryEntity> searchList() {
         return scheduleCategoryRepository.findAll();
     }

@@ -39,6 +39,14 @@ public class ScheduleDto {
     @Setter
     private UUID categoryId;
 
+    /**
+     * <b>Convert Related Method</b>
+     * <p>
+     * ScheduleEntity => ScheduleDto
+     * 
+     * @param entity : ScheduleEntity
+     * @return ScheduleDto
+     */
     public static ScheduleDto toDto(ScheduleEntity entity) {
         ScheduleDto dto = ScheduleDto.builder()
                 .id(entity.getId())

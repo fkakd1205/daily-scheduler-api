@@ -16,9 +16,17 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ScheduleBusinessService {
-
     private final ScheduleService scheduleService;
 
+    /**
+     * <b>DB Insert Related Method</b>
+     * <p>
+     * schedule을 생성한다.
+     * 
+     * @param dto : ScheduleDto
+     * @see ScheduleEntity#toEntity
+     * @see ScheduleService#saveAndModify
+     */
     public void createOne(ScheduleDto dto) {
         ScheduleEntity entity = ScheduleEntity.toEntity(dto);
 
@@ -33,12 +41,30 @@ public class ScheduleBusinessService {
         scheduleService.saveAndModify(newEntity);
     }
     
+    /**
+     * <b>DB Select Related Method</b>
+     * <p>
+     * schedule을 모두 조회한다.
+     * 
+     * @param dto : ScheduleDto
+     * @see ScheduleService#searchList
+     * @see ScheduleDto#toDto
+     */
     public List<ScheduleDto> searchList() {
         List<ScheduleEntity> entities = scheduleService.searchList();
         List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
         return dtos;
     }
 
+    /**
+     * <b>DB Select Related Method</b>
+     * <p>
+     * 선택된 날짜 범위의 schedule을 모두 조회한다.
+     * 
+     * @param params : Map[String, Object]
+     * @see ScheduleService#searchListByDate
+     * @see ScheduleDto#toDto
+     */
     public List<ScheduleDto> searchListByDate(Map<String, Object> params) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
         LocalDateTime startDate = null;
@@ -56,10 +82,27 @@ public class ScheduleBusinessService {
         return dtos;
     }
 
+    /**
+     * <b>DB Delete Related Method</b>
+     * <p>
+     * scheduleId에 대응되는 schedule을 제거한다.
+     * 
+     * @param scheduleId : UUID
+     * @see ScheduleService#deleteOne
+     */
     public void deleteOne(UUID scheduleId) {
         scheduleService.deleteOne(scheduleId);
     }
 
+    /**
+     * <b>DB Update Related Method</b>
+     * <p>
+     * schedule의 일부를 변경한다.
+     * 
+     * @param changedDto : ScheduleDto
+     * @see ScheduleService#searchOne
+     * @see ScheduleService#saveAndModify
+     */
     public void patchOne(ScheduleDto changedDto) {
         if(changedDto.getId() == null) {
             // TODO :: 커스텀 예외 생성하자
@@ -80,10 +123,16 @@ public class ScheduleBusinessService {
         scheduleService.saveAndModify(entity);
     }
 
+    /**
+     * <b>DB Update Related Method</b>
+     * <p>
+     * schedule을 수정한다.
+     * 
+     * @param dtos : List[ScheduleDto]
+     * @see ScheduleService#searchAllById
+     * @see ScheduleService#saveListAndModify
+     */
     public void updateBatch(List<ScheduleDto> dtos) {
-        // 1. id값들로 스케쥴 엔티티 조회
-        // 2. 엔티티와 dtos를 돌면서 동일한 id라면 entity값을 dtos로 변경
-        // 3. (서비스단에 saveListAndModify 생성 후) saveListAndModify 실행
         List<UUID> idList = dtos.stream().map(r -> r.getId()).collect(Collectors.toList());
         List<ScheduleEntity> entities = scheduleService.searchAllById(idList);
 

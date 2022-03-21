@@ -46,6 +46,14 @@ public class ScheduleEntity {
     @Column(name = "category_id")
     private UUID categoryId;
 
+    /**
+     * <b>Convert Related Method</b>
+     * <p>
+     * ScheduleDto => ScheduleEntity
+     * 
+     * @param dto : ScheduleDto
+     * @return ScheduleEntity
+     */
     public static ScheduleEntity toEntity(ScheduleDto dto) {
         ScheduleEntity entity = ScheduleEntity.builder()
                 .id(dto.getId())

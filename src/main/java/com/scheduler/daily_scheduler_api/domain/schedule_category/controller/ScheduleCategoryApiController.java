@@ -16,9 +16,16 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/schedule-categories")
 @RequiredArgsConstructor
 public class ScheduleCategoryApiController {
-
     private final ScheduleCategoryBusinessService scheduleCategoryBusinessService;
 
+    /**
+     * <b>Search Schedule Category</b>
+     * <p>
+     * <b>GET : /api/v1/schedule-categories</b>
+     * 
+     * @return ResponseEntity
+     * @see ScheduleCategoryBusinessService#searchList
+     */
     @GetMapping("")
     public ResponseEntity<?> searchList() {
         Message message = Message.builder()

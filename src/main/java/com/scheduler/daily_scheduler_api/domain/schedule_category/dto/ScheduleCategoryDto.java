@@ -21,6 +21,14 @@ public class ScheduleCategoryDto {
     private String name;
     private String description;
 
+    /**
+     * <b>Convert Related Method</b>
+     * <p>
+     * ScheduleCategoryEntity => ScheduleCategoryDto
+     * 
+     * @param entity : ScheduleCategoryEntity
+     * @return ScheduleCategoryDto
+     */
     public static ScheduleCategoryDto toDto(ScheduleCategoryEntity entity) {
         ScheduleCategoryDto dto = ScheduleCategoryDto.builder()
                 .id(entity.getId())

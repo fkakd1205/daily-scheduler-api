@@ -30,9 +30,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/v1/schedules")
 @RequiredArgsConstructor
 public class ScheduleApiController {
-
     private final ScheduleBusinessService scheduleBusinessService;
 
+    /**
+     * <b>Create Schedule</b>
+     * <p>
+     * <b>POST : /api/v1/schedules</b>
+     * 
+     * @param dto : ScheduleDto
+     * @return : ResponseEntity
+     * @see ScheduleBusinessService#createOne
+     */
     @PostMapping("")
     public ResponseEntity<?> createOne(@RequestBody ScheduleDto dto) {
         scheduleBusinessService.createOne(dto);
@@ -45,6 +53,14 @@ public class ScheduleApiController {
         return new ResponseEntity<>(message, message.getStatus());
     }
 
+    /**
+     * <b>Search Schedule</b>
+     * <p>
+     * <b>GET : /api/v1/schedules</b>
+     * 
+     * @return : ResponseEntity
+     * @see ScheduleBusinessService#searchList
+     */
     @GetMapping("")
     public ResponseEntity<?> searchList() {
         Message message = Message.builder()
@@ -56,6 +72,15 @@ public class ScheduleApiController {
         return new ResponseEntity<>(message, message.getStatus());
     }
 
+    /**
+     * <b>Search Schedule By Date</b>
+     * <p>
+     * <b>GET : /api/v1/schedules/date</b>
+     * 
+     * @param params : Map[String, Object]
+     * @return ResponseEntity
+     * @see ScheduleBusinessService#searchListByDate
+     */
     @GetMapping("/date")
     public ResponseEntity<?> searchListByDate(@RequestParam Map<String, Object> params) {
         Message message = Message.builder()
@@ -67,6 +92,15 @@ public class ScheduleApiController {
         return new ResponseEntity<>(message, message.getStatus());
     }
 
+    /**
+     * <b>Delete Schedule</b>
+     * <p>
+     * <b>DELETE : /api/v1/schedules/{id}</b>
+     * 
+     * @param scheduleId : UUID
+     * @return ResponseEntity
+     * @see ScheduleBusinessService#deleteOne
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable(value="id") UUID scheduleId) {
         scheduleBusinessService.deleteOne(scheduleId);
@@ -79,6 +113,15 @@ public class ScheduleApiController {
         return new ResponseEntity<>(message, message.getStatus());
     }
 
+    /**
+     * <b>Change Schedule</b>
+     * <p>
+     * <b>PATCH : /api/v1/schedules</b>
+     * 
+     * @param dto : ScheduleDto
+     * @return ResponseEntity
+     * @see ScheduleBusinessService#patchOne
+     */
     @PatchMapping("")
     public ResponseEntity<?> patchOne(@RequestBody ScheduleDto dto) {
         scheduleBusinessService.patchOne(dto);
@@ -91,6 +134,15 @@ public class ScheduleApiController {
         return new ResponseEntity<>(message, message.getStatus());
     }
 
+    /**
+     * <b>Update Schedule</b>
+     * <p>
+     * <b>PUT : /api/v1/schedules</b>
+     * 
+     * @param dto : List[ScheduleDto]
+     * @return ResponseEntity
+     * @see ScheduleBusinessService#updateBatch
+     */
     @PutMapping("")
     public ResponseEntity<?> updateBatch(@RequestBody List<ScheduleDto> dtos) {
         scheduleBusinessService.updateBatch(dtos);
