@@ -46,6 +46,24 @@ public class ScheduleService {
     /**
      * <b>DB Select Related Method</b>
      * <p>
+     * id에 대응하는 schedule을 조회한다.
+     * 
+     * @return List[ScheduleEntity]
+     * @see ScheduleRepository#findAll
+     */
+    public ScheduleEntity searchOne(UUID scheduleId) {
+        Optional<ScheduleEntity> entityOpt = scheduleRepository.findById(scheduleId);
+
+        if(entityOpt.isPresent()) {
+            return entityOpt.get();
+        }else {
+            throw new CustomNotFoundDataException("데이터가 존재하지 않습니다.");
+        }
+    }
+
+    /**
+     * <b>DB Select Related Method</b>
+     * <p>
      * schedule을 모두 조회한다.
      * 
      * @return List[ScheduleEntity]
@@ -65,24 +83,6 @@ public class ScheduleService {
      */
     public List<ScheduleEntity> searchListByDate(LocalDateTime startDate, LocalDateTime endDate) {
         return scheduleRepository.findAllByDate(startDate, endDate);
-    }
-
-    /**
-     * <b>DB Select Related Method</b>
-     * <p>
-     * id에 대응하는 schedule을 조회한다.
-     * 
-     * @return List[ScheduleEntity]
-     * @see ScheduleRepository#findAll
-     */
-    public ScheduleEntity searchOne(UUID scheduleId) {
-        Optional<ScheduleEntity> entityOpt = scheduleRepository.findById(scheduleId);
-
-        if(entityOpt.isPresent()) {
-            return entityOpt.get();
-        }else {
-            throw new CustomNotFoundDataException("데이터가 존재하지 않습니다.");
-        }
     }
 
     /**

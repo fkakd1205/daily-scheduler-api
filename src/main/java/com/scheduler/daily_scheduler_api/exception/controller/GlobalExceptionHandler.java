@@ -19,10 +19,22 @@ public class GlobalExceptionHandler {
        log.warn("EXCEPTION ROOTCAUSE => {}", e.getRootCause());
 
        Message message = new Message();
-       message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-       message.setMessage("undefined_error");
-       message.setMemo("알 수 없는 에러가 발생했습니다. 관리자에게 문의하세요.");
+       message.setStatus(HttpStatus.BAD_REQUEST);
+       message.setMessage("db_error");
+       message.setMemo("데이터베이스 오류. 관리자에게 문의하세요.");
 
        return new ResponseEntity<>(message, message.getStatus());
     }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<?> exceptionHandler(Exception e) {
+        log.warn("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+ 
+        Message message = new Message();
+        message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        message.setMessage("error");
+        message.setMemo("알 수 없는 에러가 발생했습니다. 관리자에게 문의하세요.");
+ 
+        return new ResponseEntity<>(message, message.getStatus());
+     }
 }
