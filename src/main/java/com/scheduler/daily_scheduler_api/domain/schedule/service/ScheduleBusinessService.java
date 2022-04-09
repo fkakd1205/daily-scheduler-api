@@ -52,11 +52,11 @@ public class ScheduleBusinessService {
      * @see ScheduleService#searchList
      * @see ScheduleDto#toDto
      */
-    public List<ScheduleDto> searchList() {
-        List<ScheduleEntity> entities = scheduleService.searchList();
-        List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
-        return dtos;
-    }
+    // public List<ScheduleDto> searchList() {
+    //     List<ScheduleEntity> entities = scheduleService.searchList();
+    //     List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
+    //     return dtos;
+    // }
 
     /**
      * <b>DB Select Related Method</b>

@@ -61,16 +61,16 @@ public class ScheduleApiController {
      * @return : ResponseEntity
      * @see ScheduleBusinessService#searchList
      */
-    @GetMapping("")
-    public ResponseEntity<?> searchList() {
-        Message message = Message.builder()
-                .status(HttpStatus.OK)
-                .data(scheduleBusinessService.searchList())
-                .message("success")
-                .build();
+    // @GetMapping("")
+    // public ResponseEntity<?> searchList() {
+    //     Message message = Message.builder()
+    //             .status(HttpStatus.OK)
+    //             .data(scheduleBusinessService.searchList())
+    //             .message("success")
+    //             .build();
 
-        return new ResponseEntity<>(message, message.getStatus());
-    }
+    //     return new ResponseEntity<>(message, message.getStatus());
+    // }
 
     /**
      * <b>Search Schedule By Date</b>

@@ -69,9 +69,9 @@ public class ScheduleService {
      * @return List[ScheduleEntity]
      * @see ScheduleRepository#findAll
      */
-    public List<ScheduleEntity> searchList() {
-        return scheduleRepository.findAll();
-    }
+    // public List<ScheduleEntity> searchList() {
+    //     return scheduleRepository.findAll();
+    // }
 
     /**
      * <b>DB Select Related Method</b>
