@@ -139,7 +139,7 @@ public class ScheduleApiController {
      * <p>
      * <b>PUT : /api/v1/schedules</b>
      * 
-     * @param dto : List[ScheduleDto]
+     * @param dtos : List[ScheduleDto]
      * @return ResponseEntity
      * @see ScheduleBusinessService#updateBatch
      */

@@ -36,7 +36,7 @@ public class ScheduleService {
      * <p>
      * 다중 schedule을 등록 or 수정한다.
      * 
-     * @param entity :List[ScheduleEntity]
+     * @param entities :List[ScheduleEntity]
      * @see ScheduleRepository#saveAll
      */
     public void saveListAndModify(List<ScheduleEntity> entities) {
