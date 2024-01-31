@@ -54,30 +54,11 @@ public class ScheduleApiController {
     }
 
     /**
-     * <b>Search Schedule</b>
-     * <p>
-     * <b>GET : /api/v1/schedules</b>
-     * 
-     * @return : ResponseEntity
-     * @see ScheduleBusinessService#searchList
-     */
-    // @GetMapping("")
-    // public ResponseEntity<?> searchList() {
-    //     Message message = Message.builder()
-    //             .status(HttpStatus.OK)
-    //             .data(scheduleBusinessService.searchList())
-    //             .message("success")
-    //             .build();
-
-    //     return new ResponseEntity<>(message, message.getStatus());
-    // }
-
-    /**
      * <b>Search Schedule By Date</b>
      * <p>
      * <b>GET : /api/v1/schedules/date</b>
      * 
-     * @param params : Map[String, Object]
+     * @param params : Map[String, Object] startDate, endDate
      * @return ResponseEntity
      * @see ScheduleBusinessService#searchListByDate
      */
@@ -122,8 +103,9 @@ public class ScheduleApiController {
      * @return ResponseEntity
      * @see ScheduleBusinessService#patchOne
      */
-    @PatchMapping("")
-    public ResponseEntity<?> patchOne(@RequestBody ScheduleDto dto) {
+    @PatchMapping("/completed-cancel")
+    public ResponseEntity<?> cancelCompeletedSchedule(@RequestBody ScheduleDto dto) {
+        // TODO :: B-Service단 메서드명 변경하자
         scheduleBusinessService.patchOne(dto);
         
         Message message = Message.builder()
@@ -143,7 +125,7 @@ public class ScheduleApiController {
      * @return ResponseEntity
      * @see ScheduleBusinessService#updateBatch
      */
-    @PutMapping("")
+    @PutMapping("/batch")
     public ResponseEntity<?> updateBatch(@RequestBody List<ScheduleDto> dtos) {
         scheduleBusinessService.updateBatch(dtos);
         

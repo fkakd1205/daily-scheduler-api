@@ -2,6 +2,7 @@ package com.scheduler.daily_scheduler_api.domain.schedule.service;
 
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
 import com.scheduler.daily_scheduler_api.domain.schedule.entity.ScheduleEntity;
+import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 
 import org.springframework.stereotype.Service;
@@ -68,18 +69,18 @@ public class ScheduleBusinessService {
      * @see ScheduleDto#toDto
      */
     public List<ScheduleDto> searchListByDate(Map<String, Object> params) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
-        LocalDateTime startDate = null;
-        LocalDateTime endDate = null;
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+        Object startDate = params.get("startDate");
+        Object endDate = params.get("endDate");
 
-        if (params.get("startDate") == null || params.get("endDate") == null) {
-            return null;
+        if (startDate == null || endDate == null) {
+            throw new CustomInvalidDateFormatException("검색된 날짜 형식이 올바르지 않습니다.");
         }
 
-        startDate = LocalDateTime.parse(params.get("startDate").toString(), format);
-        endDate = LocalDateTime.parse(params.get("endDate").toString(), format);
+        LocalDateTime start = LocalDateTime.parse(startDate.toString(), format);
+        LocalDateTime end = LocalDateTime.parse(endDate.toString(), format);
 
-        List<ScheduleEntity> entities = scheduleService.searchListByDate(startDate, endDate);
+        List<ScheduleEntity> entities = scheduleService.searchListByDate(start, end);
         List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
         return dtos;
     }
@@ -90,10 +91,12 @@ public class ScheduleBusinessService {
      * scheduleId에 대응되는 schedule을 제거한다.
      * 
      * @param scheduleId : UUID
+     * @see ScheduleService#searchOne
      * @see ScheduleService#deleteOne
      */
     public void deleteOne(UUID scheduleId) {
-        scheduleService.deleteOne(scheduleId);
+        ScheduleEntity entity = scheduleService.searchOne(scheduleId);
+        scheduleService.deleteOne(entity);
     }
 
     /**
@@ -101,23 +104,24 @@ public class ScheduleBusinessService {
      * <p>
      * schedule의 일부를 변경한다.
      * 
-     * @param changedDto : ScheduleDto
+     * @param dto : ScheduleDto
      * @see ScheduleService#searchOne
      * @see ScheduleService#saveAndModify
      */
-    public void patchOne(ScheduleDto changedDto) {
-        if(changedDto.getId() == null) {
-            throw new CustomNotFoundDataException("수정하려는 데이터가 존재하지 않습니다.");
+    public void patchOne(ScheduleDto dto) {
+        UUID scheduleId = dto.getId();
+        if(scheduleId == null) {
+            throw new CustomNotFoundDataException("수정 데이터가 존재하지 않습니다.");
         }
 
-        ScheduleEntity entity = scheduleService.searchOne(changedDto.getId());
+        ScheduleEntity entity = scheduleService.searchOne(scheduleId);
 
-        if(changedDto.getCategoryId() != null) {
-            entity.setCategoryId(changedDto.getCategoryId());
-        }else if(changedDto.getCompleted() != null) {
-            entity.setCompleted(changedDto.getCompleted()).setCompletedAt(null);
-        }else if(changedDto.getContent() != null) {
-            entity.setContent(changedDto.getContent());
+        if(dto.getCategoryId() != null) {
+            entity.setCategoryId(dto.getCategoryId());
+        }else if(dto.getCompleted() != null) {
+            entity.setCompleted(dto.getCompleted()).setCompletedAt(null);
+        }else if(dto.getContent() != null) {
+            entity.setContent(dto.getContent());
         }
         entity.setUpdatedAt(LocalDateTime.now());
 
@@ -127,7 +131,7 @@ public class ScheduleBusinessService {
     /**
      * <b>DB Update Related Method</b>
      * <p>
-     * schedule을 수정한다.
+     * 다중 schedule을 수정한다.
      * 
      * @param dtos : List[ScheduleDto]
      * @see ScheduleService#searchAllById
@@ -140,8 +144,7 @@ public class ScheduleBusinessService {
         entities.stream().forEach(entity -> {
             dtos.stream().forEach(dto -> {
                 if(dto.getId().equals(entity.getId())) {
-                    entity.setCategoryId(dto.getCategoryId())
-                        .setContent(dto.getContent())
+                    entity.setContent(dto.getContent())
                         .setUpdatedAt(LocalDateTime.now());
 
                     if(!entity.getCompleted() && dto.getCompleted()){

@@ -64,20 +64,10 @@ public class ScheduleService {
     /**
      * <b>DB Select Related Method</b>
      * <p>
-     * schedule을 모두 조회한다.
-     * 
-     * @return List[ScheduleEntity]
-     * @see ScheduleRepository#findAll
-     */
-    // public List<ScheduleEntity> searchList() {
-    //     return scheduleRepository.findAll();
-    // }
-
-    /**
-     * <b>DB Select Related Method</b>
-     * <p>
      * 해당 날짜의 schedule을 모두 조회한다.
      * 
+     * @param startDate : LocalDateTime
+     * @param endDate : LocalDateTime
      * @return List[ScheduleEntity]
      * @see ScheduleRepository#findAll
      */
@@ -104,12 +94,9 @@ public class ScheduleService {
      * id에 대응하는 schedule을 제거한다.
      * 
      * @param scheduleId : UUID
-     * @see ScheduleRepository#findById
      * @see ScheduleRepository#delete
      */
-    public void deleteOne(UUID scheduleId) {
-        scheduleRepository.findById(scheduleId).ifPresent(schedule -> {
-            scheduleRepository.delete(schedule);
-        });
+    public void deleteOne(ScheduleEntity entity) {
+        scheduleRepository.delete(entity);
     }
 }

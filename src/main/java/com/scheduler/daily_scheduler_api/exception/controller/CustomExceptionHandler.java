@@ -1,5 +1,6 @@
 package com.scheduler.daily_scheduler_api.exception.controller;
 
+import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 import com.scheduler.daily_scheduler_api.domain.message.Message;
 
@@ -21,6 +22,18 @@ public class CustomExceptionHandler {
        Message message = new Message();
        message.setStatus(HttpStatus.NOT_FOUND);
        message.setMessage("not_found");
+       message.setMemo(e.getMessage());
+
+       return new ResponseEntity<>(message, message.getStatus());
+    }
+
+    @ExceptionHandler({CustomInvalidDateFormatException.class})
+    public ResponseEntity<?> customInvalidDateFormatExceptionHandler(CustomInvalidDateFormatException e) {
+       log.warn("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+
+       Message message = new Message();
+       message.setStatus(HttpStatus.BAD_REQUEST);
+       message.setMessage("invalid_date_format");
        message.setMemo(e.getMessage());
 
        return new ResponseEntity<>(message, message.getStatus());
