@@ -19,18 +19,18 @@ public class ScheduleCategoryApiController {
     private final ScheduleCategoryBusinessService scheduleCategoryBusinessService;
 
     /**
-     * <b>Search Schedule Category</b>
+     * <b>Search All Schedule Categories</b>
      * <p>
      * <b>GET : /api/v1/schedule-categories</b>
      * 
      * @return ResponseEntity
-     * @see ScheduleCategoryBusinessService#searchList
+     * @see ScheduleCategoryBusinessService#searchAll
      */
-    @GetMapping("")
-    public ResponseEntity<?> searchList() {
+    @GetMapping("/all")
+    public ResponseEntity<?> searchAll() {
         Message message = Message.builder()
                 .status(HttpStatus.OK)
-                .data(scheduleCategoryBusinessService.searchList())
+                .data(scheduleCategoryBusinessService.searchAll())
                 .message("success")
                 .build();
 

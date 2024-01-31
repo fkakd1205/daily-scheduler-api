@@ -21,7 +21,7 @@ public class ScheduleCategoryService {
      * @return List[ScheduleCategoryEntity]
      * @see ScheduleCategoryRepository#findAll
      */
-    public List<ScheduleCategoryEntity> searchList() {
+    public List<ScheduleCategoryEntity> searchAll() {
         return scheduleCategoryRepository.findAll();
     }
 }

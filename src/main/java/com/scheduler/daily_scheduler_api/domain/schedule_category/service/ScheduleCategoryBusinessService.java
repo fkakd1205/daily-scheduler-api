@@ -20,10 +20,11 @@ public class ScheduleCategoryBusinessService {
      * schedule category를 모두 조회한다.
      * 
      * @return List[ScheduleCategoryDto]
+     * @see ScheduleCategoryService#searchAll
      * @see ScheduleCategoryDto#toDto
      */
-    public List<ScheduleCategoryDto> searchList() {
-        List<ScheduleCategoryEntity> entities = scheduleCategoryService.searchList();
+    public List<ScheduleCategoryDto> searchAll() {
+        List<ScheduleCategoryEntity> entities = scheduleCategoryService.searchAll();
         List<ScheduleCategoryDto> dtos = entities.stream().map(r -> ScheduleCategoryDto.toDto(r)).collect(Collectors.toList());
         return dtos;
     }
