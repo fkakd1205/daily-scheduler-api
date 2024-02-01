@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.scheduler.daily_scheduler_api.domain.message.Message;
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
+import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDtoForCompleted;
 import com.scheduler.daily_scheduler_api.domain.schedule.service.ScheduleBusinessService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -97,16 +98,15 @@ public class ScheduleApiController {
     /**
      * <b>Change Schedule</b>
      * <p>
-     * <b>PATCH : /api/v1/schedules</b>
+     * <b>PATCH : /api/v1/schedules/completed</b>
      * 
-     * @param dto : ScheduleDto
+     * @param dto : ScheduleDtoForCompleted
      * @return ResponseEntity
-     * @see ScheduleBusinessService#patchOne
+     * @see ScheduleBusinessService#updateCompeletedSchedule
      */
-    @PatchMapping("/completed-cancel")
-    public ResponseEntity<?> cancelCompeletedSchedule(@RequestBody ScheduleDto dto) {
-        // TODO :: B-Service단 메서드명 변경하자
-        scheduleBusinessService.patchOne(dto);
+    @PatchMapping("/completed")
+    public ResponseEntity<?> updateCompeletedSchedule(@RequestBody ScheduleDtoForCompleted dto) {
+        scheduleBusinessService.updateCompeletedSchedule(dto);
         
         Message message = Message.builder()
                 .status(HttpStatus.OK)

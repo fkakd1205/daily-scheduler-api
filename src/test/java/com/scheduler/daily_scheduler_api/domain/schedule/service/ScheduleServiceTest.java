@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
+import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDtoForCompleted;
 import com.scheduler.daily_scheduler_api.domain.schedule.entity.ScheduleEntity;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 
@@ -103,28 +104,28 @@ public class ScheduleServiceTest {
     }
 
     @Test
-    @DisplayName("스케쥴 단일 일부 수정")
-    void 스케쥴_단일_일부_수정() {
+    @DisplayName("스케쥴 단일 완료여부 수정")
+    void 스케쥴_단일_완료여부_수정() {
         // given
         UUID scheduleId = UUID.randomUUID();
         ScheduleEntity entity = createEntity(scheduleId);
         scheduleService.saveAndModify(entity);
 
-        ScheduleDto changedDto = ScheduleDto.builder()
+        ScheduleDtoForCompleted changedDto = ScheduleDtoForCompleted.builder()
             .id(entity.getId())
             .completed(true)
             .build();
 
         // when
-        scheduleBusinessService.patchOne(changedDto);
+        scheduleBusinessService.updateCompeletedSchedule(changedDto);
         ScheduleEntity resultEntity = scheduleService.searchOne(changedDto.getId());
         
         // then
         assertThat(resultEntity.getId()).isEqualTo(entity.getId());
-        // Assertions.assertThat(resultEntity.getContent()).isEqualTo(changedDto.getContent());
-        // Assertions.assertThat(resultEntity.getContent()).isNotEqualTo(entity.getContent());
         assertThat(resultEntity.getCompleted()).isTrue();
         assertThat(resultEntity.getUpdatedAt()).isAfter(entity.getCreatedAt());
+
+        assertThat(resultEntity.getContent()).isEqualTo(entity.getContent());
     }
 
     @Test

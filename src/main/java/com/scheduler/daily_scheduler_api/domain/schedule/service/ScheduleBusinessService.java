@@ -1,6 +1,7 @@
 package com.scheduler.daily_scheduler_api.domain.schedule.service;
 
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
+import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDtoForCompleted;
 import com.scheduler.daily_scheduler_api.domain.schedule.entity.ScheduleEntity;
 import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
@@ -102,13 +103,13 @@ public class ScheduleBusinessService {
     /**
      * <b>DB Update Related Method</b>
      * <p>
-     * schedule의 일부를 변경한다.
+     * schedule의 완료 여부를 업데이트한다.
      * 
-     * @param dto : ScheduleDto
+     * @param dto : ScheduleDtoForCompleted
      * @see ScheduleService#searchOne
      * @see ScheduleService#saveAndModify
      */
-    public void patchOne(ScheduleDto dto) {
+    public void updateCompeletedSchedule(ScheduleDtoForCompleted dto) {
         UUID scheduleId = dto.getId();
         if(scheduleId == null) {
             throw new CustomNotFoundDataException("수정 데이터가 존재하지 않습니다.");
@@ -116,14 +117,14 @@ public class ScheduleBusinessService {
 
         ScheduleEntity entity = scheduleService.searchOne(scheduleId);
 
-        if(dto.getCategoryId() != null) {
-            entity.setCategoryId(dto.getCategoryId());
-        }else if(dto.getCompleted() != null) {
-            entity.setCompleted(dto.getCompleted()).setCompletedAt(null);
-        }else if(dto.getContent() != null) {
-            entity.setContent(dto.getContent());
+        entity.setCompleted(dto.getCompleted())
+            .setUpdatedAt(LocalDateTime.now());
+
+        if(dto.getCompleted()) {
+            entity.setCompletedAt(LocalDateTime.now());
+        }else {
+            entity.setCompletedAt(null);
         }
-        entity.setUpdatedAt(LocalDateTime.now());
 
         scheduleService.saveAndModify(entity);
     }
