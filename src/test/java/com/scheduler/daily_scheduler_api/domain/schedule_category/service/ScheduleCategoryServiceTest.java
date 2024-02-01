@@ -27,9 +27,9 @@ class ScheduleCategoryServiceTest {
     @Test
     @DisplayName("스케쥴 카테고리 전체조회")
     void 스케쥴_카테고리_전체조회() {
-        List<ScheduleCategoryEntity> categories = scheduleCategoryService.searchList();
+        List<ScheduleCategoryEntity> categories = scheduleCategoryService.searchAll();
 
-        assertThat(categories.size()).isEqualTo(4);
+        assertThat(categories.size()).isEqualTo(CATEGORY_LIST.length);
         for(int i = 0; i < categories.size(); i++) {
             org.junit.jupiter.api.Assertions.assertTrue(Arrays.asList(CATEGORY_LIST).contains(categories.get(i).getName()));
         }

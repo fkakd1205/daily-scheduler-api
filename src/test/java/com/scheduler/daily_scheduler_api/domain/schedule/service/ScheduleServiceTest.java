@@ -95,7 +95,7 @@ public class ScheduleServiceTest {
 
         // when
         ScheduleEntity resultEntity = scheduleService.searchOne(scheduleId);
-        scheduleService.deleteOne(resultEntity.getId());
+        scheduleService.deleteOne(resultEntity);
 
         // then
         org.junit.jupiter.api.Assertions.assertThrows(CustomNotFoundDataException.class,
