@@ -29,7 +29,7 @@ public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Intege
     )
     List<ScheduleEntity> findAllByDate(LocalDateTime startDate, LocalDateTime endDate);
 
-    @Query("SELECT DATE(sc.createdAt) as datetime, COUNT(sc) as incompletionCount, "
+    @Query("SELECT DATE(sc.createdAt) as datetime, COUNT(sc) as registrationCount, "
         + "SUM(CASE WHEN sc.completed is TRUE THEN 1 ELSE 0 END) as completionCount\n"
         + "FROM ScheduleEntity sc\n"
         + "WHERE sc.createdAt BETWEEN :startDate AND :endDate\n"

@@ -20,13 +20,13 @@ import lombok.experimental.Accessors;
 public class ScheduleSummaryDto {
     private String datetime;
     private Integer completionCount;
-    private Integer incompletionCount;
+    private Integer registrationCount;
 
     public static ScheduleSummaryDto toDto(ScheduleSummaryProjection proj) {
         ScheduleSummaryDto dto = ScheduleSummaryDto.builder()
             .datetime(proj.getDatetime().toString())
             .completionCount(proj.getCompletionCount())
-            .incompletionCount(proj.getIncompletionCount())
+            .registrationCount(proj.getRegistrationCount())
             .build();
 
         return dto;
