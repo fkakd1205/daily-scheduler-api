@@ -1,6 +1,7 @@
 package com.scheduler.daily_scheduler_api.domain.schedule.service;
 
 import com.scheduler.daily_scheduler_api.domain.schedule.entity.ScheduleEntity;
+import com.scheduler.daily_scheduler_api.domain.schedule.projection.ScheduleSummaryProjection;
 import com.scheduler.daily_scheduler_api.domain.schedule.repository.ScheduleRepository;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 
@@ -98,5 +99,19 @@ public class ScheduleService {
      */
     public void deleteOne(ScheduleEntity entity) {
         scheduleRepository.delete(entity);
+    }
+
+    /**
+     * <b>DB Select Related Method</b>
+     * <p>
+     * 해당 날짜 schedule의 전체 항목 수 / 완료 항목 수를 모두 조회한다.
+     * 
+     * @param startDate : LocalDateTime
+     * @param endDate : LocalDateTime
+     * @return List[ScheduleSummaryProjection]
+     * @see ScheduleRepository#findSummaryByDate
+     */
+    public List<ScheduleSummaryProjection> searchSummaryByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return scheduleRepository.findSummaryByDate(startDate, endDate);
     }
 }

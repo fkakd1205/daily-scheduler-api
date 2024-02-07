@@ -2,7 +2,9 @@ package com.scheduler.daily_scheduler_api.domain.schedule.service;
 
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDtoForCompleted;
+import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleSummaryDto;
 import com.scheduler.daily_scheduler_api.domain.schedule.entity.ScheduleEntity;
+import com.scheduler.daily_scheduler_api.domain.schedule.projection.ScheduleSummaryProjection;
 import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 
@@ -46,21 +48,6 @@ public class ScheduleBusinessService {
 
         scheduleService.saveAndModify(newEntity);
     }
-    
-    /**
-     * <b>DB Select Related Method</b>
-     * <p>
-     * schedule을 모두 조회한다.
-     * 
-     * @param dto : ScheduleDto
-     * @see ScheduleService#searchList
-     * @see ScheduleDto#toDto
-     */
-    // public List<ScheduleDto> searchList() {
-    //     List<ScheduleEntity> entities = scheduleService.searchList();
-    //     List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
-    //     return dtos;
-    // }
 
     /**
      * <b>DB Select Related Method</b>
@@ -162,5 +149,32 @@ public class ScheduleBusinessService {
         });
 
         scheduleService.saveListAndModify(entities);
+    }
+
+    /**
+     * <b>DB Select Related Method</b>
+     * <p>
+     * 선택된 날짜 범위의 schedule 전체 항목 수 / 완료 항목 수를 모두 조회한다.
+     * 
+     * @param params : Map[String, Object]
+     * @see ScheduleService#searchSummaryByDate
+     * @see ScheduleSummaryDto#toDto
+     */
+    @Transactional(readOnly = true)
+    public List<ScheduleSummaryDto> searchSummaryByDate(Map<String, Object> params) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+        Object startDate = params.get("startDate");
+        Object endDate = params.get("endDate");
+
+        if (startDate == null || endDate == null) {
+            throw new CustomInvalidDateFormatException("검색된 날짜 형식이 올바르지 않습니다.");
+        }
+
+        LocalDateTime start = LocalDateTime.parse(startDate.toString(), format);
+        LocalDateTime end = LocalDateTime.parse(endDate.toString(), format);
+
+        List<ScheduleSummaryProjection> projs = scheduleService.searchSummaryByDate(start, end);
+        List<ScheduleSummaryDto> dtos = projs.stream().map(r -> ScheduleSummaryDto.toDto(r)).collect(Collectors.toList());
+        return dtos;
     }
 }
