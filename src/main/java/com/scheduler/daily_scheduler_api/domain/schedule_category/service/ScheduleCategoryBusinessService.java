@@ -3,6 +3,7 @@ package com.scheduler.daily_scheduler_api.domain.schedule_category.service;
 import com.scheduler.daily_scheduler_api.domain.schedule_category.dto.ScheduleCategoryDto;
 import com.scheduler.daily_scheduler_api.domain.schedule_category.entity.ScheduleCategoryEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +24,7 @@ public class ScheduleCategoryBusinessService {
      * @see ScheduleCategoryService#searchAll
      * @see ScheduleCategoryDto#toDto
      */
+    @Transactional(readOnly = true)
     public List<ScheduleCategoryDto> searchAll() {
         List<ScheduleCategoryEntity> entities = scheduleCategoryService.searchAll();
         List<ScheduleCategoryDto> dtos = entities.stream().map(r -> ScheduleCategoryDto.toDto(r)).collect(Collectors.toList());

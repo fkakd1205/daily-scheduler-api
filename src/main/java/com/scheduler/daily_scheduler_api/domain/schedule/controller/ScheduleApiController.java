@@ -8,9 +8,9 @@ import com.scheduler.daily_scheduler_api.domain.message.Message;
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDtoForCompleted;
 import com.scheduler.daily_scheduler_api.domain.schedule.service.ScheduleBusinessService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/schedules")
 @RequiredArgsConstructor
@@ -96,7 +95,7 @@ public class ScheduleApiController {
     }
 
     /**
-     * <b>Change Schedule</b>
+     * <b>Change Schedule : completed</b>
      * <p>
      * <b>PATCH : /api/v1/schedules/completed</b>
      * 

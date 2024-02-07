@@ -7,6 +7,7 @@ import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatExcept
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +32,7 @@ public class ScheduleBusinessService {
      * @see ScheduleEntity#toEntity
      * @see ScheduleService#saveAndModify
      */
+    @Transactional
     public void createOne(ScheduleDto dto) {
         ScheduleEntity entity = ScheduleEntity.toEntity(dto);
 
@@ -69,6 +71,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#searchListByDate
      * @see ScheduleDto#toDto
      */
+    @Transactional(readOnly = true)
     public List<ScheduleDto> searchListByDate(Map<String, Object> params) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
         Object startDate = params.get("startDate");
@@ -95,6 +98,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#searchOne
      * @see ScheduleService#deleteOne
      */
+    @Transactional
     public void deleteOne(UUID scheduleId) {
         ScheduleEntity entity = scheduleService.searchOne(scheduleId);
         scheduleService.deleteOne(entity);
@@ -109,6 +113,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#searchOne
      * @see ScheduleService#saveAndModify
      */
+    @Transactional
     public void updateCompeletedSchedule(ScheduleDtoForCompleted dto) {
         UUID scheduleId = dto.getId();
         if(scheduleId == null) {
@@ -138,6 +143,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#searchAllById
      * @see ScheduleService#saveListAndModify
      */
+    @Transactional
     public void updateBatch(List<ScheduleDto> dtos) {
         List<UUID> idList = dtos.stream().map(r -> r.getId()).collect(Collectors.toList());
         List<ScheduleEntity> entities = scheduleService.searchAllById(idList);
