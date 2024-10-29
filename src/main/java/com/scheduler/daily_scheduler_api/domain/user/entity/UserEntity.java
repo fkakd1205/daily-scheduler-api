@@ -21,11 +21,12 @@ public class UserEntity {
     @Setter
     private String password;
     private String nickname;
-    private boolean isAdmin;
+    private Boolean isAdmin;
     private LocalDateTime createTime;
     @Setter
-    private boolean isWithdraw;
+    private Boolean isWithdraw;
     @Setter
+    @Enumerated(value = EnumType.STRING)
     private UserStatus status;
     @Setter
     private LocalDateTime updateTime;
@@ -36,9 +37,9 @@ public class UserEntity {
                 .userId(userDto.getUserId())
                 .password(userDto.getPassword())
                 .nickname(userDto.getNickname())
-                .isAdmin(userDto.isAdmin())
+                .isAdmin(userDto.getIsAdmin())
                 .createTime(userDto.getCreateTime())
-                .isWithdraw(userDto.isWithdraw())
+                .isWithdraw(userDto.getIsWithdraw())
                 .status(userDto.getStatus())
                 .updateTime(userDto.getUpdateTime())
                 .build();

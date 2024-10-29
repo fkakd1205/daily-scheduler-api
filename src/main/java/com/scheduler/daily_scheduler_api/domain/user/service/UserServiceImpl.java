@@ -2,6 +2,7 @@ package com.scheduler.daily_scheduler_api.domain.user.service;
 
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.UserDto;
 import com.scheduler.daily_scheduler_api.domain.user.entity.UserEntity;
+import com.scheduler.daily_scheduler_api.domain.user.enums.UserStatus;
 import com.scheduler.daily_scheduler_api.domain.user.repository.UserRepository;
 import com.scheduler.daily_scheduler_api.exception.CustomDuplicateIdException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
@@ -30,6 +31,11 @@ public class UserServiceImpl implements UserService {
 
         userDto.setCreateTime(LocalDateTime.now());
         userDto.setPassword(SHA256Util.encryptSHA256(userDto.getPassword()));
+        userDto.setStatus(UserStatus.DEFAULT);
+        userDto.setIsWithdraw(false);
+        if (userDto.getIsAdmin()) {
+            userDto.setStatus(UserStatus.ADMIN);
+        }
         UserEntity userEntity = UserEntity.toEntity(userDto);
         userRepository.save(userEntity);
     }

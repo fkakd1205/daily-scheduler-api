@@ -1,8 +1,6 @@
 package com.scheduler.daily_scheduler_api.domain.user.dto;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter

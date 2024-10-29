@@ -17,9 +17,9 @@ public class UserDto {
     private String userId;
     private String password;
     private String nickname;
-    private boolean isAdmin;
+    private Boolean isAdmin;
     private LocalDateTime createTime;
-    private boolean isWithdraw;
+    private Boolean isWithdraw;
     private UserStatus status;
     private LocalDateTime updateTime;
 
@@ -34,9 +34,9 @@ public class UserDto {
                 .userId(userEntity.getUserId())
                 .password(userEntity.getPassword())
                 .nickname(userEntity.getNickname())
-                .isAdmin(userEntity.isAdmin())
+                .isAdmin(userEntity.getIsAdmin())
                 .createTime(userEntity.getCreateTime())
-                .isWithdraw(userEntity.isWithdraw())
+                .isWithdraw(userEntity.getIsWithdraw())
                 .status(userEntity.getStatus())
                 .updateTime(userEntity.getUpdateTime())
                 .build();

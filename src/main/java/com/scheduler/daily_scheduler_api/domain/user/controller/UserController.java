@@ -1,11 +1,11 @@
 package com.scheduler.daily_scheduler_api.domain.user.controller;
 
+import com.scheduler.daily_scheduler_api.aop.LoginCheck;
 import com.scheduler.daily_scheduler_api.domain.message.Message;
 import com.scheduler.daily_scheduler_api.domain.user.dto.UserPasswordUpdateReqDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.LoginReqDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.UserDeleteReqDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.UserDto;
-import com.scheduler.daily_scheduler_api.domain.user.dto.res.LoginResDto;
 import com.scheduler.daily_scheduler_api.domain.user.enums.UserStatus;
 import com.scheduler.daily_scheduler_api.domain.user.service.UserServiceImpl;
 import com.scheduler.daily_scheduler_api.utils.SessionUtil;
@@ -44,10 +44,8 @@ public class UserController {
         String id = loginRequest.getUserId();
         String password = loginRequest.getPassword();
         UserDto userInfo = userService.login(id, password);
-        System.out.println(userInfo);
 
         if (userInfo.getStatus() == (UserStatus.ADMIN)) {
-            LoginResDto loginResDto = LoginResDto.success(userInfo);
             SessionUtil.setLoginAdminId(session, id);
         }
         else{
@@ -63,12 +61,9 @@ public class UserController {
     }
 
     @GetMapping("my-info")
-    public ResponseEntity<?> memberInfo(HttpSession session) {
-        String id = SessionUtil.getLoginMemberId(session);
-        if (id == null) {
-            id = SessionUtil.getLoginAdminId(session);
-        }
-        UserDto memberInfo = userService.getUserInfo(id);
+    @LoginCheck
+    public ResponseEntity<?> memberInfo(String accountId) {
+        UserDto memberInfo = userService.getUserInfo(accountId);
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
@@ -80,18 +75,17 @@ public class UserController {
     }
 
     @PutMapping("logout")
-    public void logout(String accountId, HttpSession session) {
+    public void logout(HttpSession session) {
         SessionUtil.clear(session);
     }
 
     @PatchMapping("password")
-    public ResponseEntity<?> updateUserPassword(@RequestBody UserPasswordUpdateReqDto userPwdReqDto,
-                                                            HttpSession session) {
-        String Id = SessionUtil.getLoginMemberId(session);
+    @LoginCheck
+    public ResponseEntity<?> updateUserPassword(String accountId, @RequestBody UserPasswordUpdateReqDto userPwdReqDto) {
         String beforePassword = userPwdReqDto.getBeforePassword();
         String afterPassword = userPwdReqDto.getAfterPassword();
 
-        userService.updatePassword(Id, beforePassword, afterPassword);
+        userService.updatePassword(accountId, beforePassword, afterPassword);
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
