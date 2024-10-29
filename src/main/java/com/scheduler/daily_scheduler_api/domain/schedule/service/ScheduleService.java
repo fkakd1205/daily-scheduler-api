@@ -55,11 +55,7 @@ public class ScheduleService {
     public ScheduleEntity searchOne(UUID scheduleId) {
         Optional<ScheduleEntity> entityOpt = scheduleRepository.findById(scheduleId);
 
-        if(entityOpt.isPresent()) {
-            return entityOpt.get();
-        }else {
-            throw new CustomNotFoundDataException("데이터가 존재하지 않습니다.");
-        }
+        return entityOpt.orElseThrow(() -> new CustomNotFoundDataException("데이터가 존재하지 않습니다."));
     }
 
     /**

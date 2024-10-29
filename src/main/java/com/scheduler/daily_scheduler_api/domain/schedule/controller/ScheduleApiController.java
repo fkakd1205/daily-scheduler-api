@@ -136,14 +136,22 @@ public class ScheduleApiController {
         return new ResponseEntity<>(message, message.getStatus());
     }
 
+    /**
+     * <b>Search Schedule Summary By params</b>
+     * <p>
+     * <b>GET : /api/v1/schedules/summary</b>
+     * 
+     * @param params : Map[String, Object] startDate, endDate
+     * @return ResponseEntity
+     * @see ScheduleBusinessService#searchSummaryByDate
+     */
     @GetMapping("/summary")
     public ResponseEntity<?> searchSummaryByDate(@RequestParam Map<String, Object> params) {
         Message message = Message.builder()
-                .status(HttpStatus.OK)
-                .data(scheduleBusinessService.searchSummaryByDate(params))
-                .message("success")
-                .build();
-
+        .status(HttpStatus.OK)
+        .data(scheduleBusinessService.searchSummaryByDate(params))
+        .message("success")
+        .build();
         return new ResponseEntity<>(message, message.getStatus());
     }
 
