@@ -8,6 +8,7 @@ import com.scheduler.daily_scheduler_api.domain.schedule.projection.ScheduleSumm
 import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -160,6 +161,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#searchSummaryByDate
      * @see ScheduleSummaryDto#toDto
      */
+    @Cacheable(value = "schedules.searchSummaryByDate", key = "'schedules.searchSummaryByDate' + #params.get('startDate') + #params.get('endDate')")
     @Transactional(readOnly = true)
     public List<ScheduleSummaryDto> searchSummaryByDate(Map<String, Object> params) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
