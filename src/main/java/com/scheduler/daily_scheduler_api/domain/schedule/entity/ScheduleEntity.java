@@ -1,6 +1,7 @@
 package com.scheduler.daily_scheduler_api.domain.schedule.entity;
 
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
+import com.scheduler.daily_scheduler_api.domain.user.entity.UserEntity;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Type;
@@ -46,6 +47,11 @@ public class ScheduleEntity {
     @Column(name = "category_id")
     private UUID categoryId;
 
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
     /**
      * <b>Convert Related Method</b>
      * <p>
@@ -55,6 +61,7 @@ public class ScheduleEntity {
      * @return ScheduleEntity
      */
     public static ScheduleEntity toEntity(ScheduleDto dto) {
+        UserEntity userEntity = UserEntity.toEntity(dto.getUser());
         ScheduleEntity entity = ScheduleEntity.builder()
                 .id(dto.getId())
                 .content(dto.getContent())
@@ -63,6 +70,7 @@ public class ScheduleEntity {
                 .updatedAt(dto.getUpdatedAt())
                 .completedAt(dto.getCompletedAt())
                 .categoryId(dto.getCategoryId())
+                .user(userEntity)
                 .build();
 
         return entity;

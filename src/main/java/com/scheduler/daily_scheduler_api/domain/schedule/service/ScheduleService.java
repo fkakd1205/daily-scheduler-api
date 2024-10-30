@@ -62,14 +62,15 @@ public class ScheduleService {
      * <b>DB Select Related Method</b>
      * <p>
      * 해당 날짜의 schedule을 모두 조회한다.
-     * 
+     *
+     * @param userId : Integer
      * @param startDate : LocalDateTime
      * @param endDate : LocalDateTime
      * @return List[ScheduleEntity]
      * @see ScheduleRepository#findAll
      */
-    public List<ScheduleEntity> searchListByDate(LocalDateTime startDate, LocalDateTime endDate) {
-        return scheduleRepository.findAllByDate(startDate, endDate);
+    public List<ScheduleEntity> searchListByDate(Integer userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return scheduleRepository.findAllByDate(userId, startDate, endDate);
     }
 
     /**
@@ -90,7 +91,7 @@ public class ScheduleService {
      * <p>
      * id에 대응하는 schedule을 제거한다.
      * 
-     * @param scheduleId : UUID
+     * @param entity : ScheduleEntity
      * @see ScheduleRepository#delete
      */
     public void deleteOne(ScheduleEntity entity) {
@@ -101,13 +102,14 @@ public class ScheduleService {
      * <b>DB Select Related Method</b>
      * <p>
      * 해당 날짜 schedule의 전체 항목 수 / 완료 항목 수를 모두 조회한다.
-     * 
+     *
+     * @param userId : Integer
      * @param startDate : LocalDateTime
      * @param endDate : LocalDateTime
      * @return List[ScheduleSummaryProjection]
      * @see ScheduleRepository#findSummaryByDate
      */
-    public List<ScheduleSummaryProjection> searchSummaryByDate(LocalDateTime startDate, LocalDateTime endDate) {
-        return scheduleRepository.findSummaryByDate(startDate, endDate);
+    public List<ScheduleSummaryProjection> searchSummaryByDate(Integer userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return scheduleRepository.findSummaryByDate(userId, startDate, endDate);
     }
 }

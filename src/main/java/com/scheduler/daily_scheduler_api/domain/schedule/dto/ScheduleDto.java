@@ -1,5 +1,6 @@
 package com.scheduler.daily_scheduler_api.domain.schedule.dto;
 
+import com.scheduler.daily_scheduler_api.domain.user.dto.req.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,6 +40,8 @@ public class ScheduleDto {
     @Setter
     private UUID categoryId;
 
+    private UserDto user;
+
     /**
      * <b>Convert Related Method</b>
      * <p>
@@ -48,6 +51,7 @@ public class ScheduleDto {
      * @return ScheduleDto
      */
     public static ScheduleDto toDto(ScheduleEntity entity) {
+        UserDto userDto = UserDto.toDto(entity.getUser());
         ScheduleDto dto = ScheduleDto.builder()
                 .id(entity.getId())
                 .content(entity.getContent())
@@ -56,6 +60,7 @@ public class ScheduleDto {
                 .updatedAt(entity.getUpdatedAt())
                 .completedAt(entity.getCompletedAt())
                 .categoryId(entity.getCategoryId())
+                .user(userDto)
                 .build();
 
         return dto;

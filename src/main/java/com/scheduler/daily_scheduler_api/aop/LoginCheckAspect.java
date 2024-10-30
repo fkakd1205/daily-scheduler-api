@@ -1,5 +1,6 @@
 package com.scheduler.daily_scheduler_api.aop;
 
+import com.scheduler.daily_scheduler_api.domain.user.dto.UserSessionDto;
 import com.scheduler.daily_scheduler_api.utils.SessionUtil;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -25,26 +26,26 @@ public class LoginCheckAspect {
     @Around("@annotation(com.scheduler.daily_scheduler_api.aop.LoginCheck) && @ annotation(loginCheck)")
     public Object userLoginCheck(ProceedingJoinPoint proceedingJoinPoint, LoginCheck loginCheck) throws Throwable {
         HttpSession session = (HttpSession) ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest().getSession();
-        String userId = null;
+        UserSessionDto userSession = null;
         int idIndex = 0;
 
         // member 확인
-        userId = SessionUtil.getLoginAdminId(session);
+        userSession = SessionUtil.getLoginAdminId(session);
 
         // admin 확인
-        if (userId == null) {
-            userId = SessionUtil.getLoginMemberId(session);
+        if (userSession == null) {
+            userSession = SessionUtil.getLoginMemberId(session);
         }
 
-        if (userId == null) {
-            log.debug(proceedingJoinPoint.toString() + "accountName :" + userId);
+        if (userSession == null) {
+            log.debug(proceedingJoinPoint.toString() + "로그인 인증 실패");
             throw new HttpStatusCodeException(HttpStatus.UNAUTHORIZED, "로그인 id값을 확인해주세요.") {};
         }
 
         Object[] modifiedArgs = proceedingJoinPoint.getArgs();
 
         if(proceedingJoinPoint.getArgs() != null) {
-            modifiedArgs[idIndex] = userId;
+            modifiedArgs[idIndex] = userSession;
         }
 
         // 실제 컨트롤러에게 값을 넘긴다

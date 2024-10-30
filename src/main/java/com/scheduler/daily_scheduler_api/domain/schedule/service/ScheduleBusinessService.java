@@ -5,6 +5,10 @@ import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDtoForCompl
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleSummaryDto;
 import com.scheduler.daily_scheduler_api.domain.schedule.entity.ScheduleEntity;
 import com.scheduler.daily_scheduler_api.domain.schedule.projection.ScheduleSummaryProjection;
+import com.scheduler.daily_scheduler_api.domain.user.dto.UserSessionDto;
+import com.scheduler.daily_scheduler_api.domain.user.dto.req.UserDto;
+import com.scheduler.daily_scheduler_api.domain.user.entity.UserEntity;
+import com.scheduler.daily_scheduler_api.domain.user.service.UserService;
 import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ScheduleBusinessService {
     private final ScheduleService scheduleService;
+    private final UserService userService;
 
     /**
      * <b>DB Insert Related Method</b>
@@ -36,15 +41,17 @@ public class ScheduleBusinessService {
      * @see ScheduleService#saveAndModify
      */
     @Transactional
-    public void createOne(ScheduleDto dto) {
-        ScheduleEntity entity = ScheduleEntity.toEntity(dto);
+    public void createOne(UserSessionDto userSession, ScheduleDto dto) {
+        UserDto userDto = userService.getUserInfo(userSession.getUserId());
+        UserEntity userEntity = UserEntity.toEntity(userDto);
 
         ScheduleEntity newEntity = ScheduleEntity.builder()
                 .id(UUID.randomUUID())
-                .content(entity.getContent())
+                .content(dto.getContent())
                 .completed(false)
                 .createdAt(LocalDateTime.now())
-                .categoryId(entity.getCategoryId())
+                .categoryId(dto.getCategoryId())
+                .user(userEntity)
                 .build();
 
         scheduleService.saveAndModify(newEntity);
@@ -60,7 +67,7 @@ public class ScheduleBusinessService {
      * @see ScheduleDto#toDto
      */
     @Transactional(readOnly = true)
-    public List<ScheduleDto> searchListByDate(Map<String, Object> params) {
+    public List<ScheduleDto> searchListByDate(UserSessionDto userSession, Map<String, Object> params) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
         Object startDate = params.get("startDate");
         Object endDate = params.get("endDate");
@@ -72,7 +79,7 @@ public class ScheduleBusinessService {
         LocalDateTime start = LocalDateTime.parse(startDate.toString(), format);
         LocalDateTime end = LocalDateTime.parse(endDate.toString(), format);
 
-        List<ScheduleEntity> entities = scheduleService.searchListByDate(start, end);
+        List<ScheduleEntity> entities = scheduleService.searchListByDate(userSession.getId(), start, end);
         List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
         return dtos;
     }
@@ -161,9 +168,9 @@ public class ScheduleBusinessService {
      * @see ScheduleService#searchSummaryByDate
      * @see ScheduleSummaryDto#toDto
      */
-    @Cacheable(value = "schedules.searchSummaryByDate", key = "'schedules.searchSummaryByDate' + #params.get('startDate') + #params.get('endDate')")
+    @Cacheable(value = "schedules.searchSummaryByDate", key = "'schedules.searchSummaryByDate' + #userSession.getUserId() + #params.get('startDate') + #params.get('endDate')")
     @Transactional(readOnly = true)
-    public List<ScheduleSummaryDto> searchSummaryByDate(Map<String, Object> params) {
+    public List<ScheduleSummaryDto> searchSummaryByDate(UserSessionDto userSession, Map<String, Object> params) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
         Object startDate = params.get("startDate");
         Object endDate = params.get("endDate");
@@ -175,7 +182,7 @@ public class ScheduleBusinessService {
         LocalDateTime start = LocalDateTime.parse(startDate.toString(), format);
         LocalDateTime end = LocalDateTime.parse(endDate.toString(), format);
 
-        List<ScheduleSummaryProjection> projs = scheduleService.searchSummaryByDate(start, end);
+        List<ScheduleSummaryProjection> projs = scheduleService.searchSummaryByDate(userSession.getId(), start, end);
         List<ScheduleSummaryDto> dtos = projs.stream().map(r -> ScheduleSummaryDto.toDto(r)).collect(Collectors.toList());
         return dtos;
     }

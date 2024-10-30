@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.scheduler.daily_scheduler_api.aop.LoginCheck;
 import com.scheduler.daily_scheduler_api.domain.message.Message;
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDto;
 import com.scheduler.daily_scheduler_api.domain.schedule.dto.ScheduleDtoForCompleted;
 import com.scheduler.daily_scheduler_api.domain.schedule.service.ScheduleBusinessService;
 
+import com.scheduler.daily_scheduler_api.domain.user.dto.UserSessionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,8 +44,9 @@ public class ScheduleApiController {
      * @see ScheduleBusinessService#createOne
      */
     @PostMapping("")
-    public ResponseEntity<?> createOne(@RequestBody ScheduleDto dto) {
-        scheduleBusinessService.createOne(dto);
+    @LoginCheck
+    public ResponseEntity<?> createOne(UserSessionDto userSession, @RequestBody ScheduleDto dto) {
+        scheduleBusinessService.createOne(userSession, dto);
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
@@ -63,10 +66,11 @@ public class ScheduleApiController {
      * @see ScheduleBusinessService#searchListByDate
      */
     @GetMapping("/date")
-    public ResponseEntity<?> searchListByDate(@RequestParam Map<String, Object> params) {
+    @LoginCheck
+    public ResponseEntity<?> searchListByDate(UserSessionDto userSession, @RequestParam Map<String, Object> params) {
         Message message = Message.builder()
                 .status(HttpStatus.OK)
-                .data(scheduleBusinessService.searchListByDate(params))
+                .data(scheduleBusinessService.searchListByDate(userSession, params))
                 .message("success")
                 .build();
 
@@ -83,7 +87,8 @@ public class ScheduleApiController {
      * @see ScheduleBusinessService#deleteOne
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOne(@PathVariable(value="id") UUID scheduleId) {
+    @LoginCheck
+    public ResponseEntity<?> deleteOne(UserSessionDto userSession, @PathVariable(value="id") UUID scheduleId) {
         scheduleBusinessService.deleteOne(scheduleId);
         
         Message message = Message.builder()
@@ -104,7 +109,8 @@ public class ScheduleApiController {
      * @see ScheduleBusinessService#updateCompeletedSchedule
      */
     @PatchMapping("/completed")
-    public ResponseEntity<?> updateCompeletedSchedule(@RequestBody ScheduleDtoForCompleted dto) {
+    @LoginCheck
+    public ResponseEntity<?> updateCompeletedSchedule(UserSessionDto userSession, @RequestBody ScheduleDtoForCompleted dto) {
         scheduleBusinessService.updateCompeletedSchedule(dto);
         
         Message message = Message.builder()
@@ -125,7 +131,8 @@ public class ScheduleApiController {
      * @see ScheduleBusinessService#updateBatch
      */
     @PutMapping("/batch")
-    public ResponseEntity<?> updateBatch(@RequestBody List<ScheduleDto> dtos) {
+    @LoginCheck
+    public ResponseEntity<?> updateBatch(UserSessionDto userSession, @RequestBody List<ScheduleDto> dtos) {
         scheduleBusinessService.updateBatch(dtos);
         
         Message message = Message.builder()
@@ -146,10 +153,11 @@ public class ScheduleApiController {
      * @see ScheduleBusinessService#searchSummaryByDate
      */
     @GetMapping("/summary")
-    public ResponseEntity<?> searchSummaryByDate(@RequestParam Map<String, Object> params) {
+    @LoginCheck
+    public ResponseEntity<?> searchSummaryByDate(UserSessionDto userSession, @RequestParam Map<String, Object> params) {
         Message message = Message.builder()
         .status(HttpStatus.OK)
-        .data(scheduleBusinessService.searchSummaryByDate(params))
+        .data(scheduleBusinessService.searchSummaryByDate(userSession, params))
         .message("success")
         .build();
         return new ResponseEntity<>(message, message.getStatus());

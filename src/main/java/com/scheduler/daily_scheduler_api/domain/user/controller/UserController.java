@@ -3,6 +3,7 @@ package com.scheduler.daily_scheduler_api.domain.user.controller;
 import com.scheduler.daily_scheduler_api.aop.LoginCheck;
 import com.scheduler.daily_scheduler_api.domain.message.Message;
 import com.scheduler.daily_scheduler_api.domain.user.dto.UserPasswordUpdateReqDto;
+import com.scheduler.daily_scheduler_api.domain.user.dto.UserSessionDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.LoginReqDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.UserDeleteReqDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.UserDto;
@@ -44,12 +45,13 @@ public class UserController {
         String id = loginRequest.getUserId();
         String password = loginRequest.getPassword();
         UserDto userInfo = userService.login(id, password);
+        UserSessionDto userSessionDto = new UserSessionDto(userInfo.getId(), userInfo.getUserId());
 
         if (userInfo.getStatus() == (UserStatus.ADMIN)) {
-            SessionUtil.setLoginAdminId(session, id);
+            SessionUtil.setLoginAdminId(session, userSessionDto);
         }
         else{
-            SessionUtil.setLoginMemberId(session, id);
+            SessionUtil.setLoginMemberId(session, userSessionDto);
         }
 
         Message message = Message.builder()
@@ -62,8 +64,8 @@ public class UserController {
 
     @GetMapping("my-info")
     @LoginCheck
-    public ResponseEntity<?> memberInfo(String accountId) {
-        UserDto memberInfo = userService.getUserInfo(accountId);
+    public ResponseEntity<?> memberInfo(UserSessionDto userSession) {
+        UserDto memberInfo = userService.getUserInfo(userSession.getUserId());
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
@@ -81,11 +83,11 @@ public class UserController {
 
     @PatchMapping("password")
     @LoginCheck
-    public ResponseEntity<?> updateUserPassword(String accountId, @RequestBody UserPasswordUpdateReqDto userPwdReqDto) {
+    public ResponseEntity<?> updateUserPassword(UserSessionDto userSession, @RequestBody UserPasswordUpdateReqDto userPwdReqDto) {
         String beforePassword = userPwdReqDto.getBeforePassword();
         String afterPassword = userPwdReqDto.getAfterPassword();
 
-        userService.updatePassword(accountId, beforePassword, afterPassword);
+        userService.updatePassword(userSession.getUserId(), beforePassword, afterPassword);
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
@@ -96,10 +98,9 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteId(@RequestBody UserDeleteReqDto userDeleteId,
-                                                  HttpSession session) {
-        String Id = SessionUtil.getLoginMemberId(session);
-        userService.deleteId(Id, userDeleteId.getPassword());
+    @LoginCheck
+    public ResponseEntity<?> deleteId(UserSessionDto userSession, @RequestBody UserDeleteReqDto userDeleteId) {
+        userService.deleteId(userSession.getUserId(), userDeleteId.getPassword());
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
