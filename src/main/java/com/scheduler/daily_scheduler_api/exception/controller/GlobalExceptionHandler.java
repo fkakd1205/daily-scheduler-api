@@ -15,8 +15,8 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler({DataAccessException.class})
     public ResponseEntity<?> dataAccessExceptionHandler(DataAccessException e) {
-       log.warn("EXCEPTION STACKTRACE => {}", e.getStackTrace());
-       log.warn("EXCEPTION ROOTCAUSE => {}", e.getRootCause());
+       log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+       log.error("EXCEPTION ROOTCAUSE => {}", e.getRootCause());
 
        Message message = new Message();
        message.setStatus(HttpStatus.BAD_REQUEST);
@@ -26,9 +26,21 @@ public class GlobalExceptionHandler {
        return new ResponseEntity<>(message, message.getStatus());
     }
 
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<?> exceptionHandler(Exception e) {
-        log.warn("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<?> illegalExceptionHandler(IllegalArgumentException e) {
+        log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+
+        Message message = new Message();
+        message.setStatus(HttpStatus.BAD_REQUEST);
+        message.setMessage("error");
+        message.setMemo(e.getMessage());
+
+        return new ResponseEntity<>(message, message.getStatus());
+    }
+
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e) {
+        log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
  
         Message message = new Message();
         message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);

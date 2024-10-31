@@ -12,6 +12,7 @@ import com.scheduler.daily_scheduler_api.domain.user.service.UserService;
 import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class ScheduleBusinessService {
     private final ScheduleService scheduleService;
@@ -112,6 +114,7 @@ public class ScheduleBusinessService {
     public void updateCompeletedSchedule(ScheduleDtoForCompleted dto) {
         UUID scheduleId = dto.getId();
         if(scheduleId == null) {
+            log.info("udpateCompletedSchedules Error : 존재하지 않는 데이터 요청");
             throw new CustomNotFoundDataException("수정 데이터가 존재하지 않습니다.");
         }
 
@@ -175,12 +178,20 @@ public class ScheduleBusinessService {
         Object startDate = params.get("startDate");
         Object endDate = params.get("endDate");
 
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
         if (startDate == null || endDate == null) {
+            throw new CustomInvalidDateFormatException("검색 날짜가 유효하지 않습니다.");
+        }
+
+        try{
+            start = LocalDateTime.parse(startDate.toString(), format);
+            end = LocalDateTime.parse(endDate.toString(), format);
+        } catch (RuntimeException e) {
             throw new CustomInvalidDateFormatException("검색된 날짜 형식이 올바르지 않습니다.");
         }
 
-        LocalDateTime start = LocalDateTime.parse(startDate.toString(), format);
-        LocalDateTime end = LocalDateTime.parse(endDate.toString(), format);
 
         List<ScheduleSummaryProjection> projs = scheduleService.searchSummaryByDate(userSession.getId(), start, end);
         List<ScheduleSummaryDto> dtos = projs.stream().map(r -> ScheduleSummaryDto.toDto(r)).collect(Collectors.toList());

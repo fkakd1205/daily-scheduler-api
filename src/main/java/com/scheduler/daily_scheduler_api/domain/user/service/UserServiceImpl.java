@@ -8,7 +8,6 @@ import com.scheduler.daily_scheduler_api.exception.CustomDuplicateIdException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 import com.scheduler.daily_scheduler_api.utils.SHA256Util;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@Log4j2
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {

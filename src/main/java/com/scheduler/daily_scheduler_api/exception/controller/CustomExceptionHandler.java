@@ -1,6 +1,7 @@
 package com.scheduler.daily_scheduler_api.exception.controller;
 
 import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
+import com.scheduler.daily_scheduler_api.exception.CustomInvalidUserException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
 import com.scheduler.daily_scheduler_api.domain.message.Message;
 
@@ -17,7 +18,7 @@ public class CustomExceptionHandler {
     
     @ExceptionHandler({CustomNotFoundDataException.class})
     public ResponseEntity<?> customNotFoundDataExceptionHandler(CustomNotFoundDataException e) {
-       log.warn("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+       log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
 
        Message message = new Message();
        message.setStatus(HttpStatus.NOT_FOUND);
@@ -29,7 +30,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler({CustomInvalidDateFormatException.class})
     public ResponseEntity<?> customInvalidDateFormatExceptionHandler(CustomInvalidDateFormatException e) {
-       log.warn("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+       log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
 
        Message message = new Message();
        message.setStatus(HttpStatus.BAD_REQUEST);
@@ -37,5 +38,17 @@ public class CustomExceptionHandler {
        message.setMemo(e.getMessage());
 
        return new ResponseEntity<>(message, message.getStatus());
+    }
+
+    @ExceptionHandler({CustomInvalidUserException.class})
+    public ResponseEntity<?> customInvalidUserExceptionHandler(CustomInvalidUserException e) {
+        log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+
+        Message message = new Message();
+        message.setStatus(HttpStatus.FORBIDDEN);
+        message.setMessage("forbidden");
+        message.setMemo(e.getMessage());
+
+        return new ResponseEntity<>(message, message.getStatus());
     }
 }

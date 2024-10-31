@@ -1,6 +1,7 @@
 package com.scheduler.daily_scheduler_api.aop;
 
 import com.scheduler.daily_scheduler_api.domain.user.dto.UserSessionDto;
+import com.scheduler.daily_scheduler_api.exception.CustomInvalidUserException;
 import com.scheduler.daily_scheduler_api.utils.SessionUtil;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -38,8 +39,8 @@ public class LoginCheckAspect {
         }
 
         if (userSession == null) {
-            log.debug(proceedingJoinPoint.toString() + "로그인 인증 실패");
-            throw new HttpStatusCodeException(HttpStatus.UNAUTHORIZED, "로그인 id값을 확인해주세요.") {};
+            log.info(proceedingJoinPoint.toString() + "로그인 인증 실패");
+            throw new CustomInvalidUserException("인증되지 않은 접근입니다.") {};
         }
 
         Object[] modifiedArgs = proceedingJoinPoint.getArgs();
