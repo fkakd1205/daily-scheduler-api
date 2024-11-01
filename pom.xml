@@ -11,7 +11,6 @@
 	<groupId>com.scheduler</groupId>
 	<artifactId>daily_scheduler_api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
 	<name>daily_scheduler_api</name>
 	<description>daily scheduler api</description>
 	<properties>
