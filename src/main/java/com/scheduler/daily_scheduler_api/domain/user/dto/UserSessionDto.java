@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserSessionDto {
     private Integer id;
     private String userId;
+    private boolean isAdmin;
 }

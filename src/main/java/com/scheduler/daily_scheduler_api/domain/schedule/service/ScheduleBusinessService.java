@@ -142,6 +142,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#saveListAndModify
      */
     @Transactional
+
     public void updateBatch(List<ScheduleDto> dtos) {
         List<UUID> idList = dtos.stream().map(r -> r.getId()).collect(Collectors.toList());
         List<ScheduleEntity> entities = scheduleService.searchAllById(idList);

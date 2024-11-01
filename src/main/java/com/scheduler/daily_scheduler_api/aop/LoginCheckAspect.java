@@ -9,9 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -40,7 +38,7 @@ public class LoginCheckAspect {
 
         if (userSession == null) {
             log.info(proceedingJoinPoint.toString() + "로그인 인증 실패");
-            throw new CustomInvalidUserException("인증되지 않은 접근입니다.") {};
+            throw new CustomInvalidUserException("인증되지 않은 접근입니다.");
         }
 
         Object[] modifiedArgs = proceedingJoinPoint.getArgs();

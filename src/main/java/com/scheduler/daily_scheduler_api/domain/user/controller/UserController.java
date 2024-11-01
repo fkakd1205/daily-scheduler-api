@@ -45,7 +45,7 @@ public class UserController {
         String id = loginRequest.getUserId();
         String password = loginRequest.getPassword();
         UserDto userInfo = userService.login(id, password);
-        UserSessionDto userSessionDto = new UserSessionDto(userInfo.getId(), userInfo.getUserId());
+        UserSessionDto userSessionDto = new UserSessionDto(userInfo.getId(), userInfo.getUserId(), userInfo.getIsAdmin());
 
         if (userInfo.getStatus() == (UserStatus.ADMIN)) {
             SessionUtil.setLoginAdminId(session, userSessionDto);
