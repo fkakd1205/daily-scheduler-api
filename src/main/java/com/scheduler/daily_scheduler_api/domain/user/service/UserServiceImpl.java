@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
             throw new CustomDuplicateIdException("중복된 아이디입니다.");
         }
 
-        userDto.setCreateTime(LocalDateTime.now());
+        userDto.setCreatedAt(LocalDateTime.now());
         userDto.setPassword(SHA256Util.encryptSHA256(userDto.getPassword()));
         userDto.setStatus(UserStatus.DEFAULT);
         userDto.setIsWithdraw(false);

@@ -18,10 +18,10 @@ public class UserDto {
     private String password;
     private String nickname;
     private Boolean isAdmin;
-    private LocalDateTime createTime;
+    private LocalDateTime createdAt;
     private Boolean isWithdraw;
     private UserStatus status;
-    private LocalDateTime updateTime;
+    private LocalDateTime updatedAt;
 
     public static boolean hasNullDataBeforeSignUp(UserDto userDto) {
         return userDto.getUserId() == null || userDto.getPassword() == null
@@ -35,10 +35,10 @@ public class UserDto {
                 .password(userEntity.getPassword())
                 .nickname(userEntity.getNickname())
                 .isAdmin(userEntity.getIsAdmin())
-                .createTime(userEntity.getCreateTime())
+                .createdAt(userEntity.getCreatedAt())
                 .isWithdraw(userEntity.getIsWithdraw())
                 .status(userEntity.getStatus())
-                .updateTime(userEntity.getUpdateTime())
+                .updatedAt(userEntity.getUpdatedAt())
                 .build();
     }
 }

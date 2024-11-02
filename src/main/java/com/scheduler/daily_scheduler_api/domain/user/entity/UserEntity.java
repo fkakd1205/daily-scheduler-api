@@ -21,15 +21,19 @@ public class UserEntity {
     @Setter
     private String password;
     private String nickname;
+    @Column(name = "is_admin")
     private Boolean isAdmin;
-    private LocalDateTime createTime;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
     @Setter
+    @Column(name = "is_withdraw")
     private Boolean isWithdraw;
     @Setter
     @Enumerated(value = EnumType.STRING)
     private UserStatus status;
     @Setter
-    private LocalDateTime updateTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public static UserEntity toEntity(UserDto userDto) {
         return UserEntity.builder()
@@ -38,10 +42,10 @@ public class UserEntity {
                 .password(userDto.getPassword())
                 .nickname(userDto.getNickname())
                 .isAdmin(userDto.getIsAdmin())
-                .createTime(userDto.getCreateTime())
+                .createdAt(userDto.getCreatedAt())
                 .isWithdraw(userDto.getIsWithdraw())
                 .status(userDto.getStatus())
-                .updateTime(userDto.getUpdateTime())
+                .updatedAt(userDto.getUpdatedAt())
                 .build();
     }
 }
