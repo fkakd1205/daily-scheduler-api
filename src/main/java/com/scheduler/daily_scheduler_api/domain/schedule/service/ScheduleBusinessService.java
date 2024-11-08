@@ -9,20 +9,16 @@ import com.scheduler.daily_scheduler_api.domain.user.dto.UserSessionDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.UserDto;
 import com.scheduler.daily_scheduler_api.domain.user.entity.UserEntity;
 import com.scheduler.daily_scheduler_api.domain.user.service.UserService;
-import com.scheduler.daily_scheduler_api.exception.CustomInvalidDateFormatException;
 import com.scheduler.daily_scheduler_api.exception.CustomNotFoundDataException;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -43,7 +39,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#saveAndModify
      */
     @Transactional
-    public void createOne(UserSessionDto userSession, ScheduleDto dto) {
+    public ScheduleDto createOne(UserSessionDto userSession, ScheduleDto dto) {
         UserDto userDto = userService.getUserInfo(userSession.getUserId());
         UserEntity userEntity = UserEntity.toEntity(userDto);
 
@@ -57,31 +53,20 @@ public class ScheduleBusinessService {
                 .build();
 
         scheduleService.saveAndModify(newEntity);
+        return ScheduleDto.toDto(newEntity);
     }
 
     /**
      * <b>DB Select Related Method</b>
      * <p>
      * 선택된 날짜 범위의 schedule을 모두 조회한다.
-     * 
-     * @param params : Map[String, Object]
+     *
      * @see ScheduleService#searchListByDate
      * @see ScheduleDto#toDto
      */
     @Transactional(readOnly = true)
-    public List<ScheduleDto> searchListByDate(UserSessionDto userSession, Map<String, Object> params) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
-        Object startDate = params.get("startDate");
-        Object endDate = params.get("endDate");
-
-        if (startDate == null || endDate == null) {
-            throw new CustomInvalidDateFormatException("검색된 날짜 형식이 올바르지 않습니다.");
-        }
-
-        LocalDateTime start = LocalDateTime.parse(startDate.toString(), format);
-        LocalDateTime end = LocalDateTime.parse(endDate.toString(), format);
-
-        List<ScheduleEntity> entities = scheduleService.searchListByDate(userSession.getId(), start, end);
+    public List<ScheduleDto> searchListByDate(UserSessionDto userSession, LocalDateTime startDate, LocalDateTime endDate) {
+        List<ScheduleEntity> entities = scheduleService.searchListByDate(userSession.getId(), startDate, endDate);
         List<ScheduleDto> dtos = entities.stream().map(r -> ScheduleDto.toDto(r)).collect(Collectors.toList());
         return dtos;
     }
@@ -96,9 +81,10 @@ public class ScheduleBusinessService {
      * @see ScheduleService#deleteOne
      */
     @Transactional
-    public void deleteOne(UUID scheduleId) {
+    public ScheduleDto deleteOne(UUID scheduleId) {
         ScheduleEntity entity = scheduleService.searchOne(scheduleId);
         scheduleService.deleteOne(entity);
+        return ScheduleDto.toDto(entity);
     }
 
     /**
@@ -111,7 +97,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#saveAndModify
      */
     @Transactional
-    public void updateCompeletedSchedule(ScheduleDtoForCompleted dto) {
+    public ScheduleDto updateCompeletedSchedule(ScheduleDtoForCompleted dto) {
         UUID scheduleId = dto.getId();
         if(scheduleId == null) {
             log.info("udpateCompletedSchedules Error : 존재하지 않는 데이터 요청");
@@ -130,6 +116,7 @@ public class ScheduleBusinessService {
         }
 
         scheduleService.saveAndModify(entity);
+        return ScheduleDto.toDto(entity);
     }
 
     /**
@@ -142,7 +129,7 @@ public class ScheduleBusinessService {
      * @see ScheduleService#saveListAndModify
      */
     @Transactional
-    public void updateBatch(List<ScheduleDto> dtos) {
+    public List<ScheduleDto> updateBatch(List<ScheduleDto> dtos) {
         List<UUID> idList = dtos.stream().map(r -> r.getId()).collect(Collectors.toList());
         List<ScheduleEntity> entities = scheduleService.searchAllById(idList);
 
@@ -160,41 +147,25 @@ public class ScheduleBusinessService {
         });
 
         scheduleService.saveListAndModify(entities);
+        return entities.stream().map(ScheduleDto::toDto).collect(Collectors.toList());
     }
 
     /**
      * <b>DB Select Related Method</b>
      * <p>
      * 선택된 날짜 범위의 schedule 전체 항목 수 / 완료 항목 수를 모두 조회한다.
-     * 
-     * @param params : Map[String, Object]
+     *
      * @see ScheduleService#searchSummaryByDate
      * @see ScheduleSummaryDto#toDto
      */
-    @Cacheable(value = "schedules.searchSummaryByDate", key = "'schedules.searchSummaryByDate' + #userSession.getUserId() + #params.get('startDate') + #params.get('endDate')")
+    @Cacheable(value = "schedule.summary", key = "#userSession.getUserId() + ':' + #startDate.getYear() + ':' + #startDate.getMonthValue()")
     @Transactional(readOnly = true)
-    public List<ScheduleSummaryDto> searchSummaryByDate(UserSessionDto userSession, Map<String, Object> params) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
-        Object startDate = params.get("startDate");
-        Object endDate = params.get("endDate");
-
-        LocalDateTime start = null;
-        LocalDateTime end = null;
-
-        if (startDate == null || endDate == null) {
-            throw new CustomInvalidDateFormatException("검색 날짜가 유효하지 않습니다.");
-        }
-
-        try{
-            start = LocalDateTime.parse(startDate.toString(), format);
-            end = LocalDateTime.parse(endDate.toString(), format);
-        } catch (RuntimeException e) {
-            throw new CustomInvalidDateFormatException("검색된 날짜 형식이 올바르지 않습니다.");
-        }
-
-
-        List<ScheduleSummaryProjection> projs = scheduleService.searchSummaryByDate(userSession.getId(), start, end);
+    public List<ScheduleSummaryDto> searchSummaryByDate(UserSessionDto userSession, LocalDateTime startDate, LocalDateTime endDate) {
+        List<ScheduleSummaryProjection> projs = scheduleService.searchSummaryByDate(userSession.getId(), startDate, endDate);
         List<ScheduleSummaryDto> dtos = projs.stream().map(r -> ScheduleSummaryDto.toDto(r)).collect(Collectors.toList());
         return dtos;
     }
+
+    @CacheEvict(value = "schedule.summary", key = "#userSession.getUserId() + ':' + #date.getYear() + ':' + #date.getMonthValue()")
+    public void removeSummaryInCache(UserSessionDto userSession, LocalDateTime date) {}
 }

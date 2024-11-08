@@ -38,15 +38,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(message, message.getStatus());
     }
 
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e) {
-        log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
- 
-        Message message = new Message();
-        message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        message.setMessage("error");
-        message.setMemo("알 수 없는 에러가 발생했습니다. 관리자에게 문의하세요.");
- 
-        return new ResponseEntity<>(message, message.getStatus());
-     }
+    // @ExceptionHandler({RuntimeException.class})
+    // public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e) {
+    //     log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
+    //
+    //     Message message = new Message();
+    //     message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+    //     message.setMessage("error");
+    //     message.setMemo("알 수 없는 에러가 발생했습니다. 관리자에게 문의하세요.");
+    //
+    //     return new ResponseEntity<>(message, message.getStatus());
+    //  }
 }
