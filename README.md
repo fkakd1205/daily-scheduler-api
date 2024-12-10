@@ -12,7 +12,7 @@
 
 
 ### 1. 아키텍처
-<img src="https://github.com/user-attachments/assets/88e85ba1-2489-42dc-806e-60fe743c702c" width="600px" />
+<img src="https://github.com/user-attachments/assets/71ab978b-dc2f-4d24-b5c0-762f4275e720" width="600px" />
 
 <br />
 <br />
@@ -49,10 +49,6 @@ Case1)
 
 <br />
 
--> 캐싱 적용으로 RPS 약 29 증가, 평균 응답 속도 640ms에서 74ms로 단축
-
-<br />
-
 Case2)
 
 <figure style="margin-left: 50%; transform: translateX(-50%); width: 1200px; max-width: 1200px;">
@@ -64,7 +60,9 @@ Case2)
 
 <br />
 
-→ 캐싱 적용으로 RPS 약 11 증가, 평균 응답 속도 1500ms에서 600ms로 단축
+Case1 → 캐싱 적용으로 RPS 약 11 증가, 평균 응답 속도 503ms에서 16ms로 단축
+
+Case2 → 캐싱 적용으로 RPS 약 29 증가, 평균 응답 속도 181ms에서 11ms로 단축
 
 <br />
 <br />
