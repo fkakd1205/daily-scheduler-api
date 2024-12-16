@@ -1,4 +1,4 @@
-package com.scheduler.daily_scheduler_api.aop;
+package com.scheduler.daily_scheduler_api.aop.login_check;
 
 import com.scheduler.daily_scheduler_api.domain.user.dto.UserSessionDto;
 import com.scheduler.daily_scheduler_api.exception.CustomInvalidUserException;
@@ -9,9 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -24,7 +22,7 @@ import javax.servlet.http.HttpSession;
 public class LoginCheckAspect {
 
     // LoginCheck 어노테이션이 붙어있는 곳에서 aop를 실행
-    @Around("@annotation(com.scheduler.daily_scheduler_api.aop.LoginCheck) && @ annotation(loginCheck)")
+    @Around("@annotation(com.scheduler.daily_scheduler_api.aop.login_check.LoginCheck) && @ annotation(loginCheck)")
     public Object userLoginCheck(ProceedingJoinPoint proceedingJoinPoint, LoginCheck loginCheck) throws Throwable {
         HttpSession session = (HttpSession) ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest().getSession();
         UserSessionDto userSession = null;

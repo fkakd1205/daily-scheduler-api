@@ -1,7 +1,6 @@
 package com.scheduler.daily_scheduler_api.domain.user.controller;
 
-import com.scheduler.daily_scheduler_api.aop.LoginCheck;
-import com.scheduler.daily_scheduler_api.domain.message.Message;
+import com.scheduler.daily_scheduler_api.aop.login_check.LoginCheck;
 import com.scheduler.daily_scheduler_api.domain.user.dto.UserPasswordUpdateReqDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.UserSessionDto;
 import com.scheduler.daily_scheduler_api.domain.user.dto.req.LoginReqDto;
@@ -12,8 +11,6 @@ import com.scheduler.daily_scheduler_api.domain.user.service.UserServiceImpl;
 import com.scheduler.daily_scheduler_api.utils.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -26,22 +23,15 @@ public class UserController {
     private final UserServiceImpl userService;
 
     @PostMapping("sign-up")
-    public ResponseEntity<?> signUp(@RequestBody UserDto userDto) {
+    public void signUp(@RequestBody UserDto userDto) {
         if (UserDto.hasNullDataBeforeSignUp(userDto)) {
             throw new NullPointerException("회원가입시 필수 데이터를 모두 입력해야 합니다.");
         }
         userService.register(userDto);
-
-        Message message = Message.builder()
-                .status(HttpStatus.OK)
-                .message("success")
-                .build();
-
-        return new ResponseEntity<>(message, message.getStatus());
     }
 
     @PostMapping("sign-in")
-    public ResponseEntity<?> login(@RequestBody LoginReqDto loginRequest, HttpSession session) {
+    public void login(@RequestBody LoginReqDto loginRequest, HttpSession session) {
         String id = loginRequest.getUserId();
         String password = loginRequest.getPassword();
         UserDto userInfo = userService.login(id, password);
@@ -53,27 +43,12 @@ public class UserController {
         else{
             SessionUtil.setLoginMemberId(session, userSessionDto);
         }
-
-        Message message = Message.builder()
-                .status(HttpStatus.OK)
-                .message("success")
-                .build();
-
-        return new ResponseEntity<>(message, message.getStatus());
     }
 
     @GetMapping("my-info")
     @LoginCheck
-    public ResponseEntity<?> memberInfo(UserSessionDto userSession) {
-        UserDto memberInfo = userService.getUserInfo(userSession.getUserId());
-
-        Message message = Message.builder()
-                .status(HttpStatus.OK)
-                .data(memberInfo)
-                .message("success")
-                .build();
-
-        return new ResponseEntity<>(message, message.getStatus());
+    public Object memberInfo(UserSessionDto userSession) {
+        return userService.getUserInfo(userSession.getUserId());
     }
 
     @PutMapping("logout")
@@ -83,30 +58,16 @@ public class UserController {
 
     @PatchMapping("password")
     @LoginCheck
-    public ResponseEntity<?> updateUserPassword(UserSessionDto userSession, @RequestBody UserPasswordUpdateReqDto userPwdReqDto) {
+    public void updateUserPassword(UserSessionDto userSession, @RequestBody UserPasswordUpdateReqDto userPwdReqDto) {
         String beforePassword = userPwdReqDto.getBeforePassword();
         String afterPassword = userPwdReqDto.getAfterPassword();
 
         userService.updatePassword(userSession.getUserId(), beforePassword, afterPassword);
-
-        Message message = Message.builder()
-                .status(HttpStatus.OK)
-                .message("success")
-                .build();
-
-        return new ResponseEntity<>(message, message.getStatus());
     }
 
     @DeleteMapping
     @LoginCheck
-    public ResponseEntity<?> deleteId(UserSessionDto userSession, @RequestBody UserDeleteReqDto userDeleteId) {
+    public void deleteId(UserSessionDto userSession, @RequestBody UserDeleteReqDto userDeleteId) {
         userService.deleteId(userSession.getUserId(), userDeleteId.getPassword());
-
-        Message message = Message.builder()
-                .status(HttpStatus.OK)
-                .message("success")
-                .build();
-
-        return new ResponseEntity<>(message, message.getStatus());
     }
 }

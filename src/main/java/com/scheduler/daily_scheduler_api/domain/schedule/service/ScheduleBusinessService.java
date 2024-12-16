@@ -42,7 +42,6 @@ public class ScheduleBusinessService {
     public ScheduleDto createOne(UserSessionDto userSession, ScheduleDto dto) {
         UserDto userDto = userService.getUserInfo(userSession.getUserId());
         UserEntity userEntity = UserEntity.toEntity(userDto);
-
         ScheduleEntity newEntity = ScheduleEntity.builder()
                 .id(UUID.randomUUID())
                 .content(dto.getContent())
@@ -162,8 +161,7 @@ public class ScheduleBusinessService {
     @Transactional(readOnly = true)
     public List<ScheduleSummaryDto> searchSummaryByDate(UserSessionDto userSession, LocalDateTime startDate, LocalDateTime endDate) {
         List<ScheduleSummaryProjection> projs = scheduleService.searchSummaryByDate(userSession.getId(), startDate, endDate);
-        List<ScheduleSummaryDto> dtos = projs.stream().map(r -> ScheduleSummaryDto.toDto(r)).collect(Collectors.toList());
-        return dtos;
+        return projs.stream().map(ScheduleSummaryDto::toDto).collect(Collectors.toList());
     }
 
     @CacheEvict(value = "schedule.summary", key = "#userSession.getUserId() + ':' + #date.getYear() + ':' + #date.getMonthValue()")

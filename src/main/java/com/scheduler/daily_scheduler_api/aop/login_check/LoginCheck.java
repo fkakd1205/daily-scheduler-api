@@ -1,4 +1,4 @@
-package com.scheduler.daily_scheduler_api.aop;
+package com.scheduler.daily_scheduler_api.aop.login_check;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
