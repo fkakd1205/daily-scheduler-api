@@ -18,10 +18,11 @@ public class GlobalExceptionHandler {
        log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
        log.error("EXCEPTION ROOTCAUSE => {}", e.getRootCause());
 
-       Message message = new Message();
-       message.setStatus(HttpStatus.BAD_REQUEST);
-       message.setMessage("db_error");
-       message.setMemo("데이터베이스 오류. 관리자에게 문의하세요.");
+       Message message = Message.builder()
+               .status(HttpStatus.BAD_REQUEST)
+               .message("db_error")
+               .memo("데이터베이스 오류. 관리자에게 문의하세요.")
+               .build();
 
        return new ResponseEntity<>(message, message.getStatus());
     }
@@ -30,10 +31,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> illegalExceptionHandler(IllegalArgumentException e) {
         log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
 
-        Message message = new Message();
-        message.setStatus(HttpStatus.BAD_REQUEST);
-        message.setMessage("error");
-        message.setMemo(e.getMessage());
+        Message message = Message.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message("error")
+                .memo(e.getMessage())
+                .build();
 
         return new ResponseEntity<>(message, message.getStatus());
     }

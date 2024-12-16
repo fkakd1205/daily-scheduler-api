@@ -1,13 +1,10 @@
 package com.scheduler.daily_scheduler_api.domain.message;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
-@Data
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {

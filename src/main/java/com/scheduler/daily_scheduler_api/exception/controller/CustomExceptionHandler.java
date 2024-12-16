@@ -20,10 +20,11 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> customNotFoundDataExceptionHandler(CustomNotFoundDataException e) {
        log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
 
-       Message message = new Message();
-       message.setStatus(HttpStatus.NOT_FOUND);
-       message.setMessage("not_found");
-       message.setMemo(e.getMessage());
+       Message message = Message.builder()
+               .status(HttpStatus.NOT_FOUND)
+               .message("not_found")
+               .memo(e.getMessage())
+               .build();
 
        return new ResponseEntity<>(message, message.getStatus());
     }
@@ -32,10 +33,11 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> customInvalidDateFormatExceptionHandler(CustomInvalidDateFormatException e) {
        log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
 
-       Message message = new Message();
-       message.setStatus(HttpStatus.BAD_REQUEST);
-       message.setMessage("invalid_date_format");
-       message.setMemo(e.getMessage());
+       Message message = Message.builder()
+               .status(HttpStatus.BAD_REQUEST)
+               .message("invalid_date_format")
+               .memo(e.getMessage())
+               .build();
 
        return new ResponseEntity<>(message, message.getStatus());
     }
@@ -44,10 +46,11 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> customInvalidUserExceptionHandler(CustomInvalidUserException e) {
         log.error("EXCEPTION STACKTRACE => {}", e.getStackTrace());
 
-        Message message = new Message();
-        message.setStatus(HttpStatus.FORBIDDEN);
-        message.setMessage("forbidden");
-        message.setMemo(e.getMessage());
+        Message message = Message.builder()
+                .status(HttpStatus.FORBIDDEN)
+                .message("forbidden")
+                .memo(e.getMessage())
+                .build();
 
         return new ResponseEntity<>(message, message.getStatus());
     }

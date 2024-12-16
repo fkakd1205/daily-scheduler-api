@@ -10,7 +10,9 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-@ControllerAdvice
+@ControllerAdvice(
+    basePackages = "com.scheduler.daily_scheduler_api.domain"
+)
 public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
